@@ -7,7 +7,7 @@ import { SocketProvider } from './context/SocketContext'
 import { ChatProvider } from './context/ChatContext'
 import { CallProvider } from './context/CallContext'
 
-createRoot(document.getElementById('root')).render(
+const appTree = (
   <StrictMode>
     <AuthProvider>
       <SocketProvider>
@@ -19,4 +19,8 @@ createRoot(document.getElementById('root')).render(
       </SocketProvider>
     </AuthProvider>
   </StrictMode>
+)
+
+createRoot(document.getElementById('root')).render(
+  appTree
 )

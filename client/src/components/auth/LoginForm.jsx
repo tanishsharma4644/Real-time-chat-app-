@@ -5,6 +5,7 @@ const LoginForm = ({ onSwitch, onError }) => {
   const { login } = useAuth()
   const [form, setForm] = useState({ email: '', password: '' })
   const [submitting, setSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -37,14 +38,23 @@ const LoginForm = ({ onSwitch, onError }) => {
         <label className="mb-2 block text-[13px] font-medium text-white/60">Password</label>
         <div className="relative">
           <input
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             value={form.password}
             onChange={(event) => setForm((prev) => ({ ...prev, password: event.target.value }))}
             className="input-auth pr-12"
             placeholder="••••••••"
+            autoComplete="current-password"
             required
           />
-          <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary">👁️</button>
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            onMouseDown={(event) => event.preventDefault()}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? '🙈' : '👁️'}
+          </button>
         </div>
       </div>
 
