@@ -55,8 +55,8 @@ const MessageInput = () => {
       )}
       
       <form onSubmit={handleSubmit} className="input-wrapper group">
-        <button type="button" onClick={() => setShowPicker(!showPicker)} className="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.8)] hover:scale-110 transition-all duration-200 cursor-pointer">
-          <Smile size={22} />
+        <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.8)] hover:scale-110 transition-all duration-200 cursor-pointer disabled:opacity-50">
+          {uploading ? <Loader2 size={20} className="animate-spin text-[#6c63ff]" /> : <ImageIcon size={20} />}
         </button>
 
         <input
@@ -72,8 +72,8 @@ const MessageInput = () => {
         />
 
         <div className="flex items-center gap-[12px]">
-          <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.8)] hover:scale-110 transition-all duration-200 cursor-pointer disabled:opacity-50">
-            {uploading ? <Loader2 size={20} className="animate-spin text-[#6c63ff]" /> : <ImageIcon size={20} />}
+          <button type="button" onClick={() => setShowPicker(!showPicker)} className="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.8)] hover:scale-110 transition-all duration-200 cursor-pointer">
+            <Smile size={20} />
           </button>
           <button type="button" onClick={() => alert('Voice notes coming soon!')} className="text-[rgba(255,255,255,0.4)] hover:text-[rgba(255,255,255,0.8)] hover:scale-110 transition-all duration-200 cursor-pointer">
             <Mic size={20} />

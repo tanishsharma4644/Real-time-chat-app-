@@ -1,9 +1,9 @@
 import { useState } from 'react'
+import { Toaster } from 'react-hot-toast'
 import LoginForm from './components/auth/LoginForm'
 import RegisterForm from './components/auth/RegisterForm'
 import ChatWindow from './components/chat/ChatWindow'
 import Sidebar from './components/chat/Sidebar'
-import IconNav from './components/nav/IconNav'
 import VideoCallModal from './components/chat/VideoCallModal'
 import { useAuth } from './context/AuthContext'
 import { useChat } from './context/ChatContext'
@@ -56,17 +56,13 @@ const ChatShell = () => {
   }
 
   return (
-    <main className="min-h-screen p-4 bg-[#0f1117]">
-      <section className="mx-auto grid h-[calc(100vh-2rem)] max-w-[1400px] grid-cols-[72px_280px_1fr] rounded-2xl overflow-hidden panel-border">
-        <div className="h-full bg-[#0a0d14] border-r border-[rgba(255,255,255,0.05)] relative z-20">
-          <IconNav activeTab={activeTab} setActiveTab={setActiveTab} />
-        </div>
-
-        <div className="h-full bg-[#13161f] border-r border-[rgba(108,99,255,0.15)] relative z-10">
+    <main className="h-screen w-screen bg-[#0f1117] overflow-hidden">
+      <section className="grid h-full w-full grid-cols-[340px_1fr]">
+        <div className="h-full bg-[#0a0d14] border-r border-[rgba(255,255,255,0.05)] relative z-10 flex flex-col">
           <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
         </div>
 
-        <div className="h-full chat-bg flex flex-col relative z-0">
+        <div className="h-full chat-bg flex flex-col relative z-0 min-h-0 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent pointer-events-none"></div>
           <ChatWindow />
         </div>
@@ -87,7 +83,18 @@ function App() {
     )
   }
 
-  return isAuthenticated ? <ChatShell /> : <AuthGate />
+  return (
+    <>
+      {isAuthenticated ? <ChatShell /> : <AuthGate />}
+      <Toaster position="top-right" toastOptions={{
+        style: {
+          background: '#13161f',
+          color: '#fff',
+          border: '1px solid rgba(255,255,255,0.1)'
+        },
+      }} />
+    </>
+  )
 }
 
 export default App

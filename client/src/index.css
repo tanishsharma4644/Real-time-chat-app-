@@ -103,18 +103,17 @@ body {
   transform: translateY(0) scale(0.98);
 }
 
-/* Sender bubbles */
 .msg-sender {
   background: linear-gradient(135deg, #6c63ff 0%, #8b85ff 100%);
   border-radius: 20px 20px 4px 20px;
   padding: 10px 14px;
   max-width: 65%;
+  width: fit-content;
   box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
   color: white;
   font-size: 15px;
   line-height: 1.5;
   position: relative;
-  overflow: hidden;
 }
 .msg-sender::before {
   content: '';
@@ -126,7 +125,6 @@ body {
   pointer-events: none;
 }
 
-/* Receiver bubbles */
 .msg-receiver {
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -134,9 +132,11 @@ body {
   border-radius: 20px 20px 20px 4px;
   padding: 10px 14px;
   max-width: 65%;
+  width: fit-content;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   color: #f0f0f0;
   font-size: 15px;
+  position: relative;
 }
 
 .msg-timestamp {
@@ -163,21 +163,35 @@ body {
 
 /* Hover reaction picker */
 .reaction-picker {
-  background: rgba(30, 33, 48, 0.95);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 24px;
-  padding: 6px 10px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
   position: absolute;
-  top: -44px;
-  display: flex; gap: 4px;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.15s, transform 0.15s;
-  transform: translateY(4px);
+  top: -40px;
+  background: rgba(30, 33, 48, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 10px;
+  border-radius: 20px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 50;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
-.message-enter:hover .reaction-picker {
-  opacity: 1; pointer-events: all; transform: translateY(0);
+.msg-receiver .reaction-picker {
+  left: 0;
+  transform: scale(0.9);
+  transform-origin: left bottom;
+}
+.msg-sender .reaction-picker {
+  right: 0;
+  transform: scale(0.9);
+  transform-origin: right bottom;
+}
+.msg-sender:hover .reaction-picker,
+.msg-receiver:hover .reaction-picker {
+  opacity: 1;
+  pointer-events: all;
+  transform: scale(1);
 }
 .reaction-btn {
   font-size: 18px;
@@ -195,18 +209,18 @@ body {
   padding: 16px 24px;
 }
 .input-wrapper {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  padding: 0 16px;
-  height: 52px;
-  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  padding: 0 10px 0 20px;
+  height: 56px;
+  display: flex; align-items: center; gap: 14px;
   transition: all 0.2s ease;
 }
 .input-wrapper:focus-within {
-  border-color: rgba(108,99,255,0.5);
-  box-shadow: 0 0 0 3px rgba(108,99,255,0.1);
-  background: rgba(255,255,255,0.07);
+  border-color: rgba(108,99,255,0.4);
+  box-shadow: 0 0 0 4px rgba(108,99,255,0.15);
+  background: rgba(255,255,255,0.05);
 }
 
 .input-field {
@@ -216,34 +230,39 @@ body {
 .input-field::placeholder { color: rgba(255,255,255,0.25); }
 
 .btn-send {
-  width: 36px; height: 36px; border-radius: 10px;
+  width: 40px; height: 40px; border-radius: 50%;
   background: linear-gradient(135deg, #6c63ff, #8b85ff);
-  box-shadow: 0 2px 10px rgba(108,99,255,0.4);
+  box-shadow: 0 4px 15px rgba(108,99,255,0.3);
   display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .btn-send:hover {
-  box-shadow: 0 4px 15px rgba(108,99,255,0.6);
-  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(108,99,255,0.6);
+  transform: scale(1.1) rotate(5deg);
 }
 .btn-send:active { transform: scale(0.92); }
 
-/* Typing indicator */
 .typing-bubble {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.05);
   border-radius: 20px 20px 20px 4px;
-  padding: 12px 16px;
+  padding: 14px 18px;
   width: fit-content;
-  display: flex; gap: 4px; align-items: center;
+  display: flex; gap: 6px; align-items: center;
 }
 .typing-bubble .dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: rgba(255,255,255,0.5);
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  animation: typingBounce 1.4s infinite ease-in-out both;
 }
-.typing-bubble .dot:nth-child(1) { animation-delay: 0s; }
-.typing-bubble .dot:nth-child(2) { animation-delay: 0.15s; }
-.typing-bubble .dot:nth-child(3) { animation-delay: 0.3s; }
+.typing-bubble .dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-bubble .dot:nth-child(2) { animation-delay: -0.16s; }
+.typing-bubble .dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: scale(1) translateY(0); background: rgba(255,255,255,0.4); }
+  40% { transform: scale(1.2) translateY(-6px); background: #a78bfa; }
+}
 
 .tooltip-hover {
   position: absolute; left: 72px;

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Trash2 } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Trash2, MessageSquare, Users, Compass, Settings, Plus, Search } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useChat } from '../../context/ChatContext'
 import NewChatModal from './NewChatModal'
@@ -57,63 +58,75 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
     })
   }, [rooms, searchQuery, user._id, activeTab])
 
-  if (activeTab === 'settings') {
-    return (
-      <aside className="flex h-full flex-col bg-surface/40 backdrop-blur-md relative z-10">
-        <div className="p-5 border-b border-[rgba(255,255,255,0.06)]">
-          <h2 className="text-[20px] font-semibold tracking-[-0.02em] text-white">Settings</h2>
-        </div>
-        <div className="flex-1 overflow-y-auto p-5">
-          <div className="bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.06)] rounded-[16px] p-6 text-center">
-            <div className="mx-auto w-[80px] h-[80px] rounded-full flex items-center justify-center text-white text-[32px] font-bold mb-4" style={{ background: 'linear-gradient(135deg, #6c63ff, #8b85ff)', boxShadow: '0 8px 24px rgba(108,99,255,0.3)' }}>
-              {user.name?.[0]?.toUpperCase() || user.username?.[0]?.toUpperCase() || 'U'}
-            </div>
-            <h3 className="text-[18px] font-semibold text-white">{user.name || user.username}</h3>
-            <p className="text-[14px] text-[rgba(255,255,255,0.5)] mt-1">{user.email}</p>
-          </div>
-          
-          <div className="mt-6 space-y-2">
-            <div className="p-4 bg-[rgba(255,255,255,0.02)] rounded-[12px] border border-[rgba(255,255,255,0.04)]">
-              <h4 className="text-[14px] font-medium text-[rgba(255,255,255,0.8)] mb-1">Theme</h4>
-              <p className="text-[13px] text-[rgba(255,255,255,0.4)]">Dark Premium (Active)</p>
-            </div>
-          </div>
-        </div>
-      </aside>
-    )
-  }
-
   return (
-    <aside className="flex h-full flex-col bg-surface/40 backdrop-blur-md relative z-10">
-      <div className="p-5 border-b border-border/40">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-[20px] font-semibold tracking-[-0.02em] text-white">
-            {activeTab === 'groups' ? 'Groups' : activeTab === 'search' ? 'Search' : 'Messages'}
-          </h2>
-          <button className="w-[36px] h-[36px] rounded-full flex items-center justify-center text-[rgba(255,255,255,0.4)] hover:text-[#6c63ff] hover:bg-[rgba(108,99,255,0.1)] transition-all">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-          </button>
-        </div>
+    <aside className="flex h-full flex-col bg-[#0a0d14] relative z-10 w-[340px]">
+      {/* Top Header / Logo */}
+      <div className="p-5 flex items-center justify-between">
+        <h1 className="text-[22px] font-black tracking-tight" style={{ background: 'linear-gradient(90deg, #6c63ff, #00f2fe)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          NexTalk
+        </h1>
+        <button onClick={() => setIsModalOpen(true)} className="w-[36px] h-[36px] rounded-[12px] flex items-center justify-center border border-[rgba(255,255,255,0.08)] text-[rgba(255,255,255,0.6)] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-all active:scale-95 hover:rotate-90">
+          <Plus size={18} />
+        </button>
+      </div>
 
-        <div className="relative">
+      {/* Search */}
+      <div className="px-5 mb-4">
+        <div className="relative group">
           <input
-            autoFocus={activeTab === 'search'}
             placeholder="Search conversations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="input-search w-full pl-10 pr-4 rounded-[12px] h-[40px] text-[14px] text-white placeholder-[rgba(255,255,255,0.25)]"
+            className="w-full pl-10 pr-4 rounded-[12px] h-[42px] text-[14px] bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)] text-white placeholder-[rgba(255,255,255,0.3)] focus:outline-none focus:border-[rgba(108,99,255,0.5)] focus:bg-[rgba(255,255,255,0.06)] transition-all"
           />
-          <div className="absolute left-[12px] top-1/2 -translate-y-1/2 text-[rgba(255,255,255,0.3)]">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <div className="absolute left-[12px] top-1/2 -translate-y-1/2 text-[rgba(255,255,255,0.3)] group-focus-within:text-[#6c63ff] transition-colors">
+            <Search size={16} />
           </div>
         </div>
+      </div>
+
+      {/* Nav List */}
+      <div className="px-3 mb-6 flex flex-col gap-1">
+        <button className={`w-full flex items-center justify-between px-3 py-[10px] rounded-[12px] transition-all group ${activeTab === 'chats' ? 'bg-[rgba(108,99,255,0.15)]' : 'hover:bg-[rgba(255,255,255,0.03)] hover:translate-x-1'}`} onClick={() => setActiveTab('chats')}>
+          <div className="flex items-center gap-3">
+            <MessageSquare size={18} className={`${activeTab === 'chats' ? 'text-[#8b85ff]' : 'text-[rgba(255,255,255,0.4)] group-hover:text-[rgba(255,255,255,0.8)]'} transition-colors`} />
+            <span className={`text-[14px] font-medium ${activeTab === 'chats' ? 'text-[#8b85ff]' : 'text-[rgba(255,255,255,0.5)] group-hover:text-[rgba(255,255,255,0.8)]'} transition-colors`}>Messages</span>
+          </div>
+          {rooms.reduce((acc, r) => acc + (r.unreadCount || 0), 0) > 0 && (
+            <div className="w-[20px] h-[20px] rounded-full flex items-center justify-center text-[11px] font-bold text-white bg-gradient-to-br from-[#6c63ff] to-[#8b85ff] shadow-[0_0_10px_rgba(108,99,255,0.5)]">
+              {rooms.reduce((acc, r) => acc + (r.unreadCount || 0), 0)}
+            </div>
+          )}
+        </button>
+        <button className={`w-full flex items-center justify-between px-3 py-[10px] rounded-[12px] transition-all group ${activeTab === 'groups' ? 'bg-[rgba(108,99,255,0.15)]' : 'hover:bg-[rgba(255,255,255,0.03)] hover:translate-x-1'}`} onClick={() => setActiveTab('groups')}>
+          <div className="flex items-center gap-3">
+            <Users size={18} className={`${activeTab === 'groups' ? 'text-[#8b85ff]' : 'text-[rgba(255,255,255,0.4)] group-hover:text-[rgba(255,255,255,0.8)]'} transition-colors`} />
+            <span className={`text-[14px] font-medium ${activeTab === 'groups' ? 'text-[#8b85ff]' : 'text-[rgba(255,255,255,0.5)] group-hover:text-[rgba(255,255,255,0.8)]'} transition-colors`}>Groups</span>
+          </div>
+        </button>
+        <button className={`w-full flex items-center justify-between px-3 py-[10px] rounded-[12px] transition-all group hover:bg-[rgba(255,255,255,0.03)] hover:translate-x-1`} onClick={() => {}}>
+          <div className="flex items-center gap-3">
+            <Compass size={18} className="text-[rgba(255,255,255,0.4)] group-hover:text-[rgba(255,255,255,0.8)] transition-colors" />
+            <span className="text-[14px] font-medium text-[rgba(255,255,255,0.5)] group-hover:text-[rgba(255,255,255,0.8)] transition-colors">Explore</span>
+          </div>
+        </button>
+        <button className={`w-full flex items-center justify-between px-3 py-[10px] rounded-[12px] transition-all group ${activeTab === 'settings' ? 'bg-[rgba(108,99,255,0.15)]' : 'hover:bg-[rgba(255,255,255,0.03)] hover:translate-x-1'}`} onClick={() => setActiveTab('settings')}>
+          <div className="flex items-center gap-3">
+            <Settings size={18} className={`${activeTab === 'settings' ? 'text-[#8b85ff]' : 'text-[rgba(255,255,255,0.4)] group-hover:text-[rgba(255,255,255,0.8)]'} transition-colors`} />
+            <span className={`text-[14px] font-medium ${activeTab === 'settings' ? 'text-[#8b85ff]' : 'text-[rgba(255,255,255,0.5)] group-hover:text-[rgba(255,255,255,0.8)]'} transition-colors`}>Settings</span>
+          </div>
+        </button>
+      </div>
+
+      <div className="px-5 mb-2">
+        <h3 className="text-[11px] font-bold tracking-[0.1em] text-[rgba(255,255,255,0.3)]">RECENT</h3>
       </div>
 
       <div className="flex-1 overflow-y-auto py-2 scrollbar-thin">
         {filteredRooms.length === 0 ? (
           <div className="text-center text-sm text-[rgba(255,255,255,0.4)] py-4">No conversations found</div>
         ) : (
-          filteredRooms.map((room) => {
+          filteredRooms.map((room, index) => {
             const letter = (room.name || roomTitle(room, user._id) || 'G').slice(0,1).toUpperCase()
             let gradient = 'linear-gradient(135deg, #667eea, #764ba2)'
             if (/[G-L]/.test(letter)) gradient = 'linear-gradient(135deg, #11998e, #38ef7d)'
@@ -124,16 +137,19 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
             const isOnline = onlineSet.has(room._id)
 
             return (
-              <button
+              <motion.button
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2, delay: index * 0.05 }}
                 key={room._id}
                 onClick={() => setActiveRoomId(room._id)}
-                className={`w-[calc(100%-16px)] mx-[8px] my-[4px] flex items-center gap-[12px] rounded-[14px] p-[12px_16px] transition-all duration-150 group ${
-                  isActive ? 'bg-[rgba(108,99,255,0.12)] border-l-[3px] border-l-[#6c63ff]' : 'hover:bg-[rgba(255,255,255,0.04)] hover:translate-x-[2px]'
+                className={`w-[calc(100%-16px)] mx-[8px] my-[4px] flex items-center gap-[12px] rounded-[16px] p-[12px_16px] transition-all duration-200 group ${
+                  isActive ? 'bg-[rgba(108,99,255,0.08)] border border-[rgba(108,99,255,0.2)]' : 'hover:bg-[rgba(255,255,255,0.02)] border border-transparent hover:translate-x-[2px]'
                 }`}
               >
                 <div className="relative flex-shrink-0">
-                  <div className="h-[46px] w-[46px] rounded-full flex items-center justify-center text-sm font-semibold text-white" style={{ background: gradient }}>{letter}</div>
-                  {isOnline && <span className="absolute -right-0 -bottom-0 h-[12px] w-[12px] rounded-full bg-transparent animate-online-pulse border-[2px] border-[#13161f]" style={{ background: '#22c55e' }}></span>}
+                  <div className="h-[46px] w-[46px] rounded-2xl flex items-center justify-center text-sm font-bold text-white shadow-lg" style={{ background: gradient }}>{letter}</div>
+                  {isOnline && <span className="absolute -right-1 -bottom-1 h-[14px] w-[14px] rounded-full bg-transparent animate-online-pulse border-[3px] border-[#0a0d14]" style={{ background: '#22c55e' }}></span>}
                 </div>
                 <div className="flex-1 text-left min-w-0">
                   <div className="flex items-center justify-between mb-[2px]">
@@ -141,12 +157,21 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                     <div className="text-[11px] text-[rgba(255,255,255,0.3)] whitespace-nowrap ml-2">{room.lastMessage ? new Date(room.lastMessage.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</div>
                   </div>
                   <div className="flex items-center justify-between mt-[2px]">
-                    {room.lastMessage?.content && <div className="text-[13px] text-[rgba(255,255,255,0.4)] whitespace-nowrap overflow-hidden text-ellipsis max-w-[160px] pr-2">{room.lastMessage.content}</div>}
+                    {room.lastMessage?.content && (
+                      <div className="text-[13px] text-[rgba(255,255,255,0.4)] whitespace-nowrap overflow-hidden text-ellipsis max-w-[160px] pr-2">
+                        {(room.lastMessage.sender?._id === user._id || room.lastMessage.sender === user._id) ? 'You: ' : ''}
+                        {room.lastMessage.content}
+                      </div>
+                    )}
                     <div className="flex items-center gap-1 shrink-0">
                       {room.unreadCount > 0 && (
-                        <div className="inline-flex items-center justify-center min-w-[20px] h-[20px] rounded-[10px] text-[11px] font-semibold text-white shadow-[0_2px_8px_rgba(108,99,255,0.5)] animate-badgePulse" style={{ background: 'linear-gradient(135deg, #6c63ff, #8b85ff)' }}>
+                        <motion.div 
+                          initial={{ scale: 0.8 }}
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ repeat: Infinity, duration: 2 }}
+                          className="inline-flex items-center justify-center min-w-[20px] h-[20px] rounded-[10px] text-[11px] font-semibold text-white shadow-[0_0_12px_#6c63ff] animate-badgePulse" style={{ background: 'linear-gradient(135deg, #6c63ff, #8b85ff)' }}>
                           {room.unreadCount}
-                        </div>
+                        </motion.div>
                       )}
                       <button 
                         onClick={(e) => {
@@ -160,17 +185,29 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
                     </div>
                   </div>
                 </div>
-              </button>
+              </motion.button>
             )
           })
         )}
       </div>
 
-      <div className="p-[16px] bg-transparent">
-        <button onClick={() => setIsModalOpen(true)} className="w-full flex items-center justify-center gap-[8px] rounded-[14px] h-[46px] text-[14px] font-semibold text-white transition-all duration-200 active:scale-[0.98] hover:-translate-y-[2px]" style={{ background: 'linear-gradient(135deg, #6c63ff, #8b85ff)', boxShadow: '0 4px 15px rgba(108,99,255,0.4)' }}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-          New Chat
-        </button>
+      <div className="mt-auto p-4 border-t border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.01)]">
+        <div className="flex items-center justify-between">
+           <div className="flex items-center gap-3">
+              <div className="w-[40px] h-[40px] rounded-2xl bg-gradient-to-br from-[#f093fb] to-[#f5576c] flex items-center justify-center text-[15px] font-bold text-white shadow-[0_4px_10px_rgba(240,147,251,0.3)]">
+                {user.name?.[0]?.toUpperCase() || user.username?.[0]?.toUpperCase() || 'U'}
+              </div>
+              <div>
+                <div className="text-[14px] font-semibold text-white">{user.name || user.username}</div>
+                <div className="text-[12px] text-[#22c55e] flex items-center gap-1.5 font-medium">
+                  <span className="w-[6px] h-[6px] rounded-full bg-[#22c55e] animate-pulse"></span> Active
+                </div>
+              </div>
+           </div>
+           <button onClick={() => setActiveTab('settings')} className="text-[rgba(255,255,255,0.3)] hover:text-[#6c63ff] transition-all hover:rotate-90">
+             <Settings size={20} />
+           </button>
+        </div>
       </div>
 
       <NewChatModal 

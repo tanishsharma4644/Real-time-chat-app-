@@ -2,6 +2,33 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { api } from '../utils/api'
 import { useAuth } from './AuthContext'
 import { useSocket } from './SocketContext'
+import toast from 'react-hot-toast'
+
+const playNotificationSound = () => {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(600, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
+    
+    gainNode.gain.setValueAtTime(0, ctx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.02);
+    gainNode.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.15);
+    
+    osc.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    
+    osc.start();
+    osc.stop(ctx.currentTime + 0.2);
+  } catch (e) {
+    console.log('Audio error', e)
+  }
+}
 
 const ChatContext = createContext(null)
 
@@ -116,12 +143,23 @@ export const ChatProvider = ({ children }) => {
     const onReceiveMessage = (message) => {
       setMessagesForRoom(message.chat, (previous) => [...previous, message])
       
+      if (message.sender && message.sender._id !== user?._id) {
+        playNotificationSound()
+        
+        if (message.chat !== activeRoomId) {
+          toast(`New message from ${message.sender.name || message.sender.username}`, {
+            icon: '💬',
+            duration: 4000,
+          })
+        }
+      }
+
       setRooms(prevRooms => {
         let exists = false
         const updated = prevRooms.map(r => {
           if (r._id === message.chat) {
             exists = true
-            const isUnread = message.chat !== activeRoomId
+            const isUnread = message.chat !== activeRoomId && message.sender?._id !== user?._id
             return {
               ...r,
               lastMessage: message,
